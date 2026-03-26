@@ -46,7 +46,7 @@ end
 --  Ends the call if the player moves too far away.
 -- ─────────────────────────────────────────────
 
-local function StartDistanceCheck(payphoneId)
+function StartDistanceCheck(payphoneId)
     if CallState.distanceThread then return end
 
     local phone = GetPayphoneById(payphoneId)
@@ -178,9 +178,11 @@ RegisterNetEvent('payphones:client:callConnected', function(data)
     -- data: { voiceChannel, payphoneId }
     CallState.active     = true
     CallState.incoming   = false
+    CallState.dialing    = false
     CallState.payphoneId = data.payphoneId
 
-    StopRingtone() -- Ensure dialing/ringing sound stops
+    StopRingtone() -- Stop local dialing/ringing sound
+    StopRingtoneAtCoords(data.payphoneId) -- Stop world 3D ringing sound
     JoinVoiceChannel(data.voiceChannel)
     -- Animation already started on dial/answer
     PlayConnectBeep()

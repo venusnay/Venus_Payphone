@@ -87,7 +87,7 @@ Config.Sounds = {
 -- ─────────────────────────────────────────────
 --  LOGS & DEBUG
 -- ─────────────────────────────────────────────
-Config.Debug = true -- Enable debug tools (e.g. copy generic phone coords)
+Config.Debug = false -- Enable debug tools (e.g. copy generic phone coords)
 
 Config.Logs = {
     enabled = true,
@@ -198,6 +198,14 @@ Config.Payphones = {
         number      = '1011',
         coords      = vec4(129.41, 245.35, 106.43, 339.72),
         spawnObject = false,
+        private     = false,
+    },
+    {
+        label       = 'Niland Avenue / Alhambra Drive',
+        number      = '1012',
+        coords      = vec4(1959.06, 3738.40, 31.38, 299.43),
+        spawnObject = false,
+        model       = 1281992692,
         private     = false,
     },
 }

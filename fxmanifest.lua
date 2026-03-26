@@ -3,7 +3,7 @@ game 'gta5'
 name        'nay_payphones'
 description 'Complete payphones system for FiveM'
 author      'https://github.com/Nnayuta'
-version     '2.0.1'
+version     '2.0.2'
 
 escrow_ignore {
     'config.lua',
@@ -33,11 +33,11 @@ shared_scripts {
     '@ox_lib/init.lua',
     'config.lua',
     'shared/utils.lua',
+    'bridge/sounds/*.lua',
 }
 
 client_scripts {
     'bridge/frameworks/**/client.lua',
-    'bridge/sounds/*.lua',
     'client/animations.lua',
     'client/sounds.lua',
     'client/nui.lua',

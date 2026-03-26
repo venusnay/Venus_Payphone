@@ -94,6 +94,28 @@ RegisterNetEvent('payphones:server:syncStates', function()
     end
 end)
 
+--- Destroys world ringtone for a payphone via xsound server-side (reaches all clients).
+---@param payphoneId string
+local function DestroyWorldRingtone(payphoneId)
+    local soundId = 'payphone_world_' .. payphoneId
+    if SoundBridge then
+        SoundBridge.Stop(soundId)
+    end
+end
+
+--- Plays world ringtone for a payphone via xsound server-side (reaches all clients).
+---@param phone table
+local function PlayWorldRingtone(phone)
+    local s = Config.Sounds.RingtoneWorld
+    if s and s.type == 'custom' then
+        local soundId = 'payphone_world_' .. phone.id
+        local coords = vector3(phone.coords.x, phone.coords.y, phone.coords.z)
+        if SoundBridge then
+            SoundBridge.Play('world', soundId, s.file, { loop = true, vol = s.vol or 0.5, coords = coords, dist = s.dist or 30.0 })
+        end
+    end
+end
+
 --- Ends and cleans up an active call.
 ---@param callId string
 ---@param reason string
@@ -108,6 +130,11 @@ local function EndCall(callId, reason)
     if call.timeoutTimer then
         ClearTimeout(call.timeoutTimer)
         call.timeoutTimer = nil
+    end
+
+    -- Force destroy world ringtone via xsound server-side for ALL clients
+    if call.receiverPhone then
+        DestroyWorldRingtone(call.receiverPhone)
     end
 
     -- Notify both sides
@@ -251,6 +278,8 @@ RegisterNetEvent('payphones:server:dial', function(data)
         callerNumber = callerNumber,
     })
 
+    PlayWorldRingtone(targetPhone)
+
     activeCalls[callId] = {
         callerId      = source,
         callerPhone   = data.payphoneId,
@@ -277,10 +306,11 @@ RegisterNetEvent('payphones:server:dial', function(data)
         ))
     end
 
-    -- Automatic Timeout
+    -- Automatic Timeout (flag-based to guarantee cancellation)
     local timeoutMs = Config.CallTimeout * 1000
-    activeCalls[callId].timeoutTimer = SetTimeout(timeoutMs, function()
-        if activeCalls[callId] then
+    activeCalls[callId].timeoutCancelled = false
+    SetTimeout(timeoutMs, function()
+        if activeCalls[callId] and not activeCalls[callId].timeoutCancelled then
             EndCall(callId, 'timeout')
         end
     end)
@@ -325,11 +355,11 @@ RegisterNetEvent('payphones:server:acceptCall', function(data)
         return
     end
 
-    -- Cancel timeout
-    if call.timeoutTimer then
-        ClearTimeout(call.timeoutTimer)
-        call.timeoutTimer = nil
-    end
+    -- Cancel timeout via flag
+    call.timeoutCancelled = true
+
+    -- Force destroy world ringtone via xsound server-side for ALL clients
+    DestroyWorldRingtone(call.receiverPhone)
 
     -- Register receiver
     activeCalls[data.callId].receiverId = source

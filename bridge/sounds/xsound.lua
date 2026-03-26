@@ -1,6 +1,4 @@
---- Bridge de Som para o xSound
---- Traduz chamadas de áudio para as funções do plugin xsound.
-
+--- Sound Bridge to xSound
 SoundBridge = {}
 
 --- Toca áudio MP3 (Customizado).
@@ -13,28 +11,24 @@ function SoundBridge.Play(type, id, file, options)
     if not xSound then return end
 
     -- Para carregar o som da pasta local sounds/, o xsound geralmente prefixa o caminho ou o FiveM o serve.
-    -- O xsound costuma pedir URL. Se for local, tenta-se o caminho do arquivo no resource.
     local url = ('https://cfx-nui-%s/sounds/%s'):format(GetCurrentResourceName(), file)
 
     if type == 'world' and options.coords then
         -- Tocar em 3D
-        xSound:PlayUrlPos(
-            id,
-            url,
-            options.vol or 0.5,
-            options.coords,
-            options.loop or false
-        )
-        -- Configura distância do som (ex: 30 metros de raio)
-        xSound:Distance(id, options.dist or 30.0)
+        if IsDuplicityVersion() then
+            pcall(function()
+                xSound:PlayUrlPos(-1, id, url, options.vol or 0.5, options.coords, options.loop or false)
+                xSound:Distance(-1, id, options.dist or 30.0)
+            end)
+        else
+            xSound:PlayUrlPos(id, url, options.vol or 0.5, options.coords, options.loop or false)
+            xSound:Distance(id, options.dist or 30.0)
+        end
     else
         -- Tocar em 2D (no ouvido do player)
-        xSound:PlayUrl(
-            id,
-            url,
-            options.vol or 0.5,
-            options.loop or false
-        )
+        if not IsDuplicityVersion() then
+            xSound:PlayUrl(id, url, options.vol or 0.5, options.loop or false)
+        end
     end
 end
 
@@ -43,9 +37,13 @@ end
 function SoundBridge.Stop(id)
     local xSound = exports.xsound
     if not xSound then return end
-    
-    if xSound:soundExists(id) then
-        xSound:Destroy(id)
+
+    if IsDuplicityVersion() then
+        pcall(function() xSound:Destroy(-1, id) end)
+    else
+        if xSound:soundExists(id) then
+            xSound:Destroy(id)
+        end
     end
 end
 

@@ -84,7 +84,7 @@ function PlayRingtoneAtEntityOrCoords(payphoneId, entity, coords)
     local soundId = 'payphone_world_' .. payphoneId
 
     if s.type == 'custom' then
-        SoundBridge.Play('world', soundId, s.file, { loop = true, vol = s.vol or 0.5, coords = coords, dist = s.dist or 30.0 })
+        -- Playback of 'custom' world ringtones is handled globally by the server using xSound
         activeRings[payphoneId] = 'custom'
     else
         local id = GetSoundId()
@@ -104,12 +104,14 @@ end
 function StopRingtoneAtCoords(payphoneId)
     if activeRings[payphoneId] then
         if activeRings[payphoneId] == 'custom' then
-            SoundBridge.Stop('payphone_world_' .. payphoneId)
+            -- Stop of 'custom' world ringtones is handled globally by the server using xSound
         else
             StopSound(activeRings[payphoneId])
             ReleaseSoundId(activeRings[payphoneId])
         end
         activeRings[payphoneId] = nil
+    else
+        -- Fallback: handled by server now
     end
 end
 
