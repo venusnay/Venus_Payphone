@@ -28,8 +28,8 @@ jobs:
       - name: Get Version from fxmanifest
         id: get_version
         run: |
-          # Extrai a versão entre aspas do arquivo fxmanifest.lua
-          VERSION=$(grep "version" fxmanifest.lua | head -1 | sed "s/.*'\(.*\)'.*/\1/")
+          # Procura apenas linhas que começam com "version" (excluindo fx_version)
+          VERSION=$(grep -E "^version\s+" fxmanifest.lua | head -1 | sed "s/.*'\(.*\)'.*/\1/")
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
           echo "Identified version: $VERSION"
 
