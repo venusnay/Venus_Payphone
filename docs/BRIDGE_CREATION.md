@@ -1,101 +1,73 @@
 # Payphones Bridge Creation Guide
 
-This script uses a modular bridge system to remain framework-agnostic and compatible with multiple phone systems.
+This script uses a bridge system to remain framework-agnostic. You can easily adapt it to ESX, vRP, or your custom framework by following these steps.
 
 ## Directory Structure
 
-Bridges are separated into three categories in the `bridge/` directory:
-- `bridge/frameworks/`: Framework-specific logic (ESX, QBox, Standalone).
-- `bridge/phones/`: Integration with existing phone scripts (lb-phone, none).
+Bridges are located in the `bridge/` directory:
+- `bridge/standalone/`: Default fallback (no framework).
+- `bridge/qbx_core/`: Example for Qbox/QBCore.
 - `bridge/sounds/`: Audio plugin bridges (e.g., xsound).
 
-## 1. Creating a Framework Bridge
+## Creating a Framework Bridge
 
-To add support for a new framework (e.g., `esx`):
+To create a new bridge (e.g., `esx`):
 
-1. **Create a folder**: `bridge/frameworks/esx/`
+1. **Create a folder**: `bridge/esx/`
 2. **Create client and server files**:
-   - `bridge/frameworks/esx/client.lua`
-   - `bridge/frameworks/esx/server.lua`
+   - `bridge/esx/client.lua`
+   - `bridge/esx/server.lua`
 
 ### Server-Side Requirements
 
-Your `server.lua` must implement the `Bridge` global table.
+Your `server.lua` must implement the `Bridge` global table with the following functions:
 
-**Mandatory Functions:**
 ```lua
 Bridge = Bridge or {}
 
--- Send notification to player
----@param ntype string 'success'|'error'|'inform'|'warning'
-function Bridge.Notify(source, message, ntype) end
+-- Return player object
+function Bridge.GetPlayer(source) end
 
--- Remove money/items from player (returns true/false)
+-- Return unique identifier (citizenid/license/identifier)
+function Bridge.GetIdentifier(source) end
+
+-- Send notification to player
+function Bridge.Notify(source, message, type) end
+
+-- Remove money/checks from player
 function Bridge.RemoveMoney(source, amount) end
 ```
 
-**Optional/Internal Functions (not currently required by core):**
-- `Bridge.GetPlayer(source)`
-- `Bridge.GetIdentifier(source)`
-
 ### Client-Side Requirements
 
-Your `client.lua` handles local notifications:
+Your `client.lua` should handle local notifications:
 
 ```lua
 BridgeClient = BridgeClient or {}
 
-function BridgeClient.Notify(message, ntype) end
+function BridgeClient.Notify(message, type) end
 ```
 
----
+## Creating a Sound Bridge
 
-## 2. Creating a Phone System Bridge
+If you want to use a different audio plugin instead of `xsound`:
 
-If you want to integrate with a custom phone system (so payphones can call players' phones):
-
-1. **Create a file**: `bridge/phones/myphone.lua`
-2. **Implement `PhoneBridge`**:
-
-```lua
-if Config.PhoneSystem == 'myphone' then
-    PhoneBridge = {}
-
-    function PhoneBridge.CreateCall(source, payphoneId, payphoneNumber, targetNumber)
-        -- Start call to targetNumber, return a table with { callId = ... } or nil
-    end
-
-    function PhoneBridge.EndCall(source) end
-
-    function PhoneBridge.IsInCall(source) end
-end
-```
-
----
-
-## 3. Creating a Sound Bridge
-
-For custom audio plugins (other than `xsound`):
-
-1. Modify `bridge/sounds/xsound.lua` or create a new plugin file.
-2. Implement:
-   - `SoundBridge.Play(type, id, file, options)`
-   - `SoundBridge.Stop(id)`
-
----
+1. Modify `bridge/sounds/xsound.lua` or create a new one.
+2. Implement `SoundBridge.Play(type, id, file, options)` and `SoundBridge.Stop(id)`.
 
 ## Registering the Bridge
 
-The `fxmanifest.lua` uses wildcards to automatically load files in the `bridge/` subdirectories:
+Once your files are created, add them to `fxmanifest.lua`:
 
 ```lua
-'bridge/frameworks/**/client.lua'
-'bridge/frameworks/**/server.lua'
-'bridge/phones/*.lua'
+client_scripts {
+    'bridge/esx/client.lua',
+    ...
+}
+server_scripts {
+    'bridge/esx/server.lua',
+    ...
+}
 ```
 
-**Steps to activate:**
-1. Follow the naming convention above.
-2. Ensure each file starts with a check: `if Config.Framework ~= 'your_framework' then return end`.
-3. Update `Config.Framework` and `Config.PhoneSystem` in `config.lua` to match your identifiers.
-
+And update `Config.Framework` in `config.lua` to match your new framework name.

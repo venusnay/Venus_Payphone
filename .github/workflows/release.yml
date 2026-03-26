@@ -1,0 +1,54 @@
+name: Build and Release Payphones
+
+on:
+  push:
+    tags:
+      - 'v*' # Aciona quando você cria uma tag tipo v1.0.0
+  workflow_dispatch: # Permite rodar manualmente pelo site do GitHub
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: './web/package-lock.json'
+
+      - name: Build React UI
+        run: |
+          cd web
+          npm install
+          npm run build
+        # O build é gerado automaticamente na pasta ../html conforme o vite.config.js
+
+      - name: Prepare Package
+        run: |
+          # Criar uma pasta temporária para o pacote
+          mkdir -p release/payphones
+          
+          # Copiar tudo EXCETO a pasta web e arquivos de sistema
+          rsync -av --progress . release/payphones --exclude web --exclude .github --exclude .git --exclude release
+          
+          # Zipar a pasta do recurso
+          cd release
+          zip -r ../payphones-${{ github.ref_name }}.zip payphones/
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: payphones-${{ github.ref_name }}.zip
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

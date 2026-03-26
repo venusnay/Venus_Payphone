@@ -1,0 +1,362 @@
+/* ═══════════════════════════════════════════
+   ANALOG PAYPHONE — Retro Industrial Design
+   ═══════════════════════════════════════════ */
+
+.analog-payphone {
+  position: relative;
+  width: 320px;
+  background: linear-gradient(175deg, #2a2d35 0%, #1e2028 40%, #16171d 100%);
+  border-radius: 18px;
+  padding: 20px 18px 16px;
+  box-shadow:
+    0 30px 80px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.05),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  overflow: hidden;
+  animation: slideUp 0.4s ease-out;
+}
+
+/* Metal texture overlay */
+.analog-body-texture {
+  position: absolute;
+  inset: 0;
+  background: 
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 2px,
+      rgba(255, 255, 255, 0.008) 2px,
+      rgba(255, 255, 255, 0.008) 4px
+    );
+  pointer-events: none;
+  border-radius: 18px;
+}
+
+/* ─── Label Plate ─── */
+.analog-label-plate {
+  position: relative;
+  width: 100%;
+  background: linear-gradient(135deg, #0d47a1, #1565c0, #1976d2);
+  border-radius: 10px;
+  padding: 10px 16px 8px;
+  text-align: center;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.15),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.analog-label-screws {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px;
+  pointer-events: none;
+}
+
+.screw {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #888, #444);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+  position: relative;
+}
+
+.screw::after {
+  content: '';
+  position: absolute;
+  inset: 2px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, transparent 45%, rgba(0,0,0,0.3) 45%, rgba(0,0,0,0.3) 55%, transparent 55%);
+}
+
+.analog-label-text {
+  font-family: var(--font-digital);
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 6px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.4);
+}
+
+.analog-label-sub {
+  font-size: 9px;
+  color: rgba(255, 255, 255, 0.65);
+  letter-spacing: 1px;
+  margin-top: 2px;
+  text-transform: uppercase;
+}
+
+/* ─── Display Housing ─── */
+.analog-display-housing {
+  width: 100%;
+  background: #0a0a0c;
+  border-radius: 10px;
+  padding: 3px;
+  box-shadow:
+    inset 0 2px 6px rgba(0, 0, 0, 0.8),
+    0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.analog-display {
+  position: relative;
+  width: 100%;
+  background: #0d1117;
+  border-radius: 8px;
+  padding: 14px 16px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 212, 170, 0.08);
+}
+
+.analog-display-scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(180deg, rgba(0, 212, 170, 0.06), transparent);
+  animation: scanline 4s linear infinite;
+  pointer-events: none;
+}
+
+.analog-display-content {
+  position: relative;
+  z-index: 1;
+}
+
+.analog-display-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: rgba(0, 212, 170, 0.5);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+
+.analog-display-number {
+  font-family: var(--font-digital);
+  font-size: 28px;
+  font-weight: 700;
+  color: #00d4aa;
+  letter-spacing: 4px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  text-shadow: 0 0 12px rgba(0, 212, 170, 0.4);
+}
+
+.analog-digit {
+  display: inline-block;
+  animation: digitType 0.15s ease-out;
+}
+
+.analog-display-placeholder {
+  color: rgba(0, 212, 170, 0.2);
+  letter-spacing: 8px;
+  font-size: 22px;
+}
+
+.analog-cursor {
+  display: inline-block;
+  width: 2px;
+  height: 26px;
+  background: #00d4aa;
+  margin-left: 2px;
+  animation: blink 1s ease-in-out infinite;
+}
+
+.analog-display-status {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: rgba(0, 212, 170, 0.35);
+  letter-spacing: 1px;
+  margin-top: 6px;
+  text-transform: uppercase;
+}
+
+/* ─── Keypad ─── */
+.analog-keypad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  width: 100%;
+  padding: 4px;
+}
+
+.analog-key {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 56px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: all var(--transition-fast);
+  
+  /* Metallic button look */
+  background: linear-gradient(180deg, #3a3d48 0%, #2d3039 50%, #262830 100%);
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.analog-key:hover {
+  background: linear-gradient(180deg, #444854 0%, #363944 50%, #2e3138 100%);
+  transform: translateY(-1px);
+  box-shadow:
+    0 5px 12px rgba(0, 0, 0, 0.5),
+    0 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+
+.analog-key:active,
+.analog-key.pressed {
+  transform: translateY(1px);
+  background: linear-gradient(180deg, #252830 0%, #1e2028 50%, #191b22 100%);
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.5),
+    inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.analog-key-label {
+  font-family: var(--font-main);
+  font-size: 20px;
+  font-weight: 700;
+  color: #f0f0f5;
+  line-height: 1;
+}
+
+.analog-key-sub {
+  font-family: var(--font-main);
+  font-size: 8px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.35);
+  letter-spacing: 2px;
+  margin-top: 2px;
+}
+
+.key-ripple {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(0, 212, 170, 0.25);
+  animation: ripple 0.6s ease-out forwards;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+}
+
+/* ─── Action Buttons ─── */
+.analog-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  padding: 0 4px;
+}
+
+.analog-action-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 12px 8px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: var(--font-main);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+}
+
+.analog-action-cancel {
+  background: linear-gradient(180deg, #4a2030, #3a1525);
+  color: #ff6b7a;
+  box-shadow: 0 3px 8px rgba(255, 71, 87, 0.15), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.analog-action-cancel:hover {
+  background: linear-gradient(180deg, #5a2838, #4a1d2d);
+  box-shadow: 0 4px 12px rgba(255, 71, 87, 0.25);
+}
+
+.analog-action-clear {
+  background: linear-gradient(180deg, #3a3520, #302c18);
+  color: #ffa726;
+  box-shadow: 0 3px 8px rgba(255, 167, 38, 0.1), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+.analog-action-clear:hover {
+  background: linear-gradient(180deg, #4a4328, #3a3520);
+  box-shadow: 0 4px 12px rgba(255, 167, 38, 0.2);
+}
+
+.analog-action-call {
+  background: linear-gradient(180deg, #1a3a2a, #122e20);
+  color: rgba(0, 212, 170, 0.4);
+  box-shadow: 0 3px 8px rgba(0, 212, 170, 0.05), inset 0 1px 0 rgba(255,255,255,0.06);
+  cursor: not-allowed;
+}
+
+.analog-action-call.active {
+  background: linear-gradient(180deg, #1a4a35, #0d3a28);
+  color: #00d4aa;
+  cursor: pointer;
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+.analog-action-call.active:hover {
+  background: linear-gradient(180deg, #225a42, #155030);
+  box-shadow: 0 6px 20px rgba(0, 212, 170, 0.3);
+}
+
+/* ─── Coin Slot ─── */
+.analog-coin-slot {
+  width: 50px;
+  height: 10px;
+  background: #0a0a0c;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.6);
+}
+
+.coin-slot-inner {
+  width: 36px;
+  height: 3px;
+  background: linear-gradient(90deg, #1a1a1e, #2a2a30, #1a1a1e);
+  border-radius: 2px;
+}
+
+/* ─── Bottom Plate ─── */
+.analog-bottom-plate {
+  width: 100%;
+  text-align: center;
+  padding-top: 4px;
+}
+
+.analog-serial {
+  font-family: var(--font-mono);
+  font-size: 8px;
+  color: rgba(255, 255, 255, 0.15);
+  letter-spacing: 2px;
+}

@@ -206,12 +206,12 @@ local function BuildTargetOptions(phone, isGeneric)
                 local status = payphoneStates[phone.id] and payphoneStates[phone.id].status or 'idle'
                 return status == 'idle'
             end,
-            onSelect = function()
+            onSelect = function(data)
                 if cooldowns[phone.id] and GetGameTimer() < cooldowns[phone.id] then
                     BridgeClient.Notify(locale('cooldown_wait'), 'warning')
                     return
                 end
-                OpenDialMenu(phone.id, isGeneric)
+                OpenDialMenu(phone.id, isGeneric, data.entity)
             end,
             distance = 2.0,
         })
@@ -227,8 +227,8 @@ local function BuildTargetOptions(phone, isGeneric)
                 local status = payphoneStates[phone.id] and payphoneStates[phone.id].status or 'idle'
                 return status == 'ringing'
             end,
-            onSelect = function()
-                AcceptIncomingCall(phone.id)
+            onSelect = function(data)
+                AcceptIncomingCall(phone.id, data.entity)
             end,
             distance = 2.0,
         })

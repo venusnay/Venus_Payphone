@@ -24,18 +24,16 @@ Config.CallCost         = 0         -- Cost per call (0 = free)
 Config.CallCostItem     = 'money'   -- Item/account used for charging (framework)
 
 -- ─────────────────────────────────────────────
+--  UI THEME
+--  'analog'  → Classic payphone with physical buttons and CRT display
+--  'digital' → Modern touchscreen payphone with glass UI
+-- ─────────────────────────────────────────────
+Config.PayphoneTheme    = 'analog'
+
+-- ─────────────────────────────────────────────
 --  PMA-VOICE
 -- ─────────────────────────────────────────────
 Config.VoiceChannelBase = 1000      -- Base channel for calls (incremented by unique ID)
-
--- ─────────────────────────────────────────────
---  ANIMATIONS
--- ─────────────────────────────────────────────
-Config.Animations = {
-    dict   = 'cellphone@',
-    anim   = 'cellphone_call_listen_base',
-    flag   = 49,
-}
 
 -- ─────────────────────────────────────────────
 --  SOUNDS

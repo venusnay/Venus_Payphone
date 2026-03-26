@@ -1,0 +1,21 @@
+.payphone-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  pointer-events: auto;
+  background: transparent;
+}
+
+.payphone-enter {
+  animation: fadeIn 0.35s ease-out forwards;
+}
+
+.payphone-exit {
+  animation: fadeOut 0.3s ease-in forwards;
+}

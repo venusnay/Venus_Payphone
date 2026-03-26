@@ -16,6 +16,7 @@ local CallState = {
     incoming       = false,
     dialing        = false,
     payphoneId     = nil,
+    payphoneEntity = nil,
     voiceChannel   = nil,
     distanceThread = nil,
 }
@@ -77,11 +78,13 @@ function CleanupCallState()
     LeaveVoiceChannel()
     StopCallAnimation()
     StopRingtone()
+    ClosePayphoneNUI()
     lib.hideTextUI()
     CallState.active       = false
     CallState.incoming     = false
     CallState.dialing      = false
     CallState.payphoneId   = nil
+    CallState.payphoneEntity = nil
 end
 
 --- Returns the current payphone ID if the player is in a call.
@@ -98,42 +101,27 @@ end
 --  DIALING
 -- ─────────────────────────────────────────────
 
---- Opens the dialing input and sends the request to the server.
+--- Sets the call state to dialing (called from nui.lua after user inputs number).
+---@param payphoneId string
+---@param entity number|nil
+function CallState_SetDialing(payphoneId, entity)
+    CallState.payphoneId     = payphoneId
+    CallState.payphoneEntity = entity
+    CallState.dialing        = true
+end
+
+--- Opens the NUI dialing interface.
 ---@param payphoneId string
 ---@param isGeneric boolean|nil
-function OpenDialMenu(payphoneId, isGeneric)
+---@param entity number|nil
+function OpenDialMenu(payphoneId, isGeneric, entity)
     if CallState.active or CallState.incoming then
         BridgeClient.Notify(locale('already_in_call'), 'error')
         return
     end
 
-    local input = lib.inputDialog(locale('dial_title'), {
-        {
-            type        = 'input',
-            label       = locale('dial_input_label'),
-            placeholder = locale('dial_placeholder'),
-            required    = true,
-            min         = 1,
-            max         = 10,
-        },
-    })
-
-    if not input or not input[1] or input[1] == '' then return end
-
-    local targetNumber = tostring(input[1])
-    CallState.payphoneId = payphoneId
-    CallState.dialing    = true
-
-    TriggerServerEvent('payphones:server:dial', {
-        payphoneId    = payphoneId,
-        targetNumber  = targetNumber,
-        isGeneric     = isGeneric
-    })
-
-    BridgeClient.Notify(locale('calling_notify'):format(targetNumber), 'inform')
-    lib.showTextUI(locale('calling_textui'):format(targetNumber), { position = 'left-center', icon = 'phone' })
-    PlayWaitingTone()
-    StartDistanceCheck(payphoneId)
+    -- Open the React NUI interface instead of lib.inputDialog
+    OpenPayphoneNUI(payphoneId, isGeneric, entity)
 end
 
 -- ─────────────────────────────────────────────
@@ -146,7 +134,8 @@ end)
 
 --- Answers a pending call on the payphone.
 ---@param payphoneId string
-function AcceptIncomingCall(payphoneId)
+---@param entity number|nil
+function AcceptIncomingCall(payphoneId, entity)
     local stateData = GetLocalPayphoneState(payphoneId)
     if not stateData or not stateData.extra or not stateData.extra.callId then
         BridgeClient.Notify(locale('no_call_to_answer'), 'error')
@@ -162,6 +151,9 @@ function AcceptIncomingCall(payphoneId)
         callId = stateData.extra.callId,
         payphoneId = payphoneId
     })
+
+    CallState.payphoneEntity = entity
+    StartCallAnimation(entity)
 end
 
 --- Rejects a pending call on the payphone.
@@ -190,7 +182,7 @@ RegisterNetEvent('payphones:client:callConnected', function(data)
 
     StopRingtone() -- Ensure dialing/ringing sound stops
     JoinVoiceChannel(data.voiceChannel)
-    StartCallAnimation()
+    -- Animation already started on dial/answer
     PlayConnectBeep()
     StartDistanceCheck(data.payphoneId)
 
