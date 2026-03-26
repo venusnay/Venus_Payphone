@@ -27,7 +27,7 @@
     "call_end_busy": "Number busy.",
     "call_end_invalid": "Invalid number.",
     "call_end_error": "Call error.",
-    "dev_copy_config": "DEVELOPER: Copy Config Data",
+    "dev_copy_config": "DEBUG: Copy Config Data",
     "dev_copy_success": "Config data for \"%s\" copied!",
     "invalid_payphone": "Invalid payphone.",
     "number_busy": "Number busy.",

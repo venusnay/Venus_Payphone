@@ -1,5 +1,5 @@
-if Config.PhoneSystem == 'lb-phone' then
-    PhoneBridge = {}
+if Config.PhoneSystem ~= 'lb-phone' then return end
+PhoneBridge = {}
 
 --- Creates a call from a payphone to a regular phone number.
 ---@param source number The player source using the payphone.
@@ -38,4 +38,3 @@ function PhoneBridge.IsInCall(source)
 end
 
 return PhoneBridge
-end

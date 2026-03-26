@@ -27,7 +27,7 @@
     "call_end_busy": "Número ocupado.",
     "call_end_invalid": "Número inválido.",
     "call_end_error": "Erro na chamada.",
-    "dev_copy_config": "DESENVOLVEDOR: Copiar Dados",
+    "dev_copy_config": "DEBUG: Copiar Dados",
     "dev_copy_success": "Configuração de \"%s\" copiada!",
     "invalid_payphone": "Orelhão inválido.",
     "number_busy": "Número ocupado.",

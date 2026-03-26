@@ -208,4 +208,12 @@ Config.Payphones = {
         model       = 1281992692,
         private     = false,
     },
+    {
+        label       = 'San Andreas Avenue / Palomino Avenue',
+        number      = '1013',
+        coords      = vec4(-664.60, -670.83, 30.40, 0.35),
+        spawnObject = false,
+        model       = 1281992692,
+        private     = false,
+    },
 }
