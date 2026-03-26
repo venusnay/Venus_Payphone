@@ -43,21 +43,21 @@ jobs:
       - name: Prepare Package
         run: |
           # Criar uma pasta temporária para o pacote
-          mkdir -p release/payphones
+          mkdir -p release/nay_payphones
 
           # Copiar tudo EXCETO a pasta web e arquivos de sistema
-          rsync -av --progress . release/payphones --exclude web --exclude .github --exclude .git --exclude release
+          rsync -av --progress . release/nay_payphones --exclude web --exclude .github --exclude .git --exclude release
 
           # Zipar a pasta do recurso usando a versão identificada
           cd release
-          zip -r ../payphones-v${{ steps.get_version.outputs.VERSION }}.zip payphones/
+          zip -r ../nay_payphones-v${{ steps.get_version.outputs.VERSION }}.zip nay_payphones/
 
       - name: Create or Update Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
           name: Version v${{ steps.get_version.outputs.VERSION }}
-          files: payphones-v${{ steps.get_version.outputs.VERSION }}.zip
+          files: nay_payphones-v${{ steps.get_version.outputs.VERSION }}.zip
           generate_release_notes: true
           draft: false
           prerelease: false

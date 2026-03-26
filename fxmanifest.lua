@@ -1,10 +1,9 @@
 fx_version 'cerulean'
 game 'gta5'
-
-name        'payphones'
+name        'nay_payphones'
 description 'Complete payphones system for FiveM'
-author      'dev'
-version     '2.0.0'
+author      'https://github.com/Nnayuta'
+version     '2.0.1'
 
 escrow_ignore {
     'config.lua',
