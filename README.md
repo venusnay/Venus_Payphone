@@ -52,7 +52,7 @@ The following resources are required:
 | [ox_target](https://github.com/overextended/ox_target) | Payphone interactions |
 | [pma-voice](https://github.com/AvarianKnight/pma-voice) | Voice communication |
 
-Make sure all dependencies are installed and started before `nay_payphones`.
+Make sure all dependencies are installed and started before `venus_payphones`.
 
 ## Installation
 
