@@ -3,7 +3,7 @@ game 'gta5'
 name        'nay_payphones'
 description 'Complete payphones system for FiveM'
 author      'https://github.com/Nnayuta'
-version     '2.0.2'
+version     '2.0.3'
 
 escrow_ignore {
     'config.lua',
