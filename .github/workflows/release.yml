@@ -3,8 +3,8 @@ name: Build and Release Payphones
 on:
   push:
     branches:
-      - main # Monitora a branch principal (geralmente main ou master)
-  workflow_dispatch: # Permite rodar manualmente pelo site do GitHub
+      - main
+  workflow_dispatch:
 
 jobs:
   build-and-release:
@@ -43,21 +43,21 @@ jobs:
       - name: Prepare Package
         run: |
           # Criar uma pasta temporária para o pacote
-          mkdir -p release/nay_payphones
+          mkdir -p release/venus_payphone
 
           # Copiar tudo EXCETO a pasta web e arquivos de sistema
-          rsync -av --progress . release/nay_payphones --exclude web --exclude .github --exclude .git --exclude release
+          rsync -av --progress . release/venus_payphone --exclude web --exclude .github --exclude .git --exclude release
 
           # Zipar a pasta do recurso usando a versão identificada
           cd release
-          zip -r ../nay_payphones-v${{ steps.get_version.outputs.VERSION }}.zip nay_payphones/
+          zip -r ../venus_payphone-v${{ steps.get_version.outputs.VERSION }}.zip venus_payphone/
 
       - name: Create or Update Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: v${{ steps.get_version.outputs.VERSION }}
           name: Version v${{ steps.get_version.outputs.VERSION }}
-          files: nay_payphones-v${{ steps.get_version.outputs.VERSION }}.zip
+          files: venus_payphone-v${{ steps.get_version.outputs.VERSION }}.zip
           generate_release_notes: true
           draft: false
           prerelease: false
